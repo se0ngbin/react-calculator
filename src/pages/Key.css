@@ -1,0 +1,14 @@
+.key {
+    border: none;
+    background-color: #9de0ad;
+    font-size: 24px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 15px;
+}
+
+.key:hover {
+    background-color: #e5fcc2;
+    color: black;
+}

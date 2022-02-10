@@ -1,0 +1,12 @@
+.frame {
+    width: 340px;
+    height: 450px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #45ada8;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-gap: 10px;
+}
+
