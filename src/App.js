@@ -60,17 +60,45 @@ class App extends React.Component {
 		return calculatedNumber;
 	}
 
-	calculate = (result) => {
-		var calculatedNumber = this.doOperation(result);
-
-		this.setState({
-			result: "" + calculatedNumber,
-			prevAns: calculatedNumber,
-			proceed: false
-		});
+	calcNewResult = (result, i) => {
+		let lower = result.lastIndexOf(" ", i - 2) + 1;
+		let upper = result.indexOf(" ", result.indexOf(" ", i) + 1);
+		if (upper == -1 && lower == 0) { return "" + this.doOperation(result); }
+		if (upper == -1) { return result.slice(0, lower) + this.doOperation(result.slice(lower)); }
+		return result.slice(0, lower) + this.doOperation(result.slice(lower, upper)) + result.slice(upper);
 	}
 
+	calculate = (result) => {
+		if (result.indexOf(" ") === -1) {
+			this.setState({
+				result: result,
+				prevAns: result,
+				proceed: false
+			});
+			return;
+		}
 
+		if (result.indexOf("^") !== -1) {
+			let i = result.indexOf("^");
+			return this.calculate(this.calcNewResult(result, i));
+		}
+
+		if (result.indexOf("*") !== -1 || result.indexOf("/") !== -1 || result.indexOf("m") !== -1) {
+			let i = result.indexOf("*") !== -1 ? result.indexOf("*") : Number.MAX_SAFE_INTEGER;
+			let j = result.indexOf("/") !== -1 ? result.indexOf("/") : Number.MAX_SAFE_INTEGER;
+			let k = result.indexOf("m") !== -1 ? result.indexOf("m") : Number.MAX_SAFE_INTEGER;
+			i = i < j ? i : j;
+			i = i < k ? i : k;
+			return this.calculate(this.calcNewResult(result, i));
+		}
+
+		if (result.indexOf("+") !== -1 || result.indexOf("-") !== -1) {
+			let i = result.indexOf("+") !== -1 ? result.indexOf("+") : Number.MAX_SAFE_INTEGER;
+			let j = result.indexOf("-") !== -1 ? result.indexOf("-") : Number.MAX_SAFE_INTEGER;
+			i = i < j ? i : j;
+			return this.calculate(this.calcNewResult(result, i));
+		}
+	}
 
 	pressedKey = key => {
 		if (key === "AC") {
@@ -108,7 +136,7 @@ class App extends React.Component {
 		else if (key === "Ans") {
 			let lastDig = this.state.result.slice(-1);
 			console.log(this.state)
-			
+
 			if (this.state.proceed && (lastDig === " " || lastDig === '-')) {
 				if (lastDig === '-' && this.state.prevAns < 0) {
 					console.log("first taken")
@@ -218,7 +246,7 @@ class App extends React.Component {
 
 			// if multiple numbers
 			else { num = this.state.result.slice(lastNumIndex + 1); }
-			
+
 			switch (key) {
 				case "ln":
 					num = Math.log(num);
