@@ -2,6 +2,7 @@
 
 This is a calculator I built using react. Currently supports +, -, *, /, modulus, negating, ln and log.
 
+<img src="calc.png" alt="picture of my calculator" width="250"/>
 
 ## Notes on functionality 
 
