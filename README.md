@@ -5,6 +5,10 @@ This is a calculator I built using react. Currently supports +, -, *, /, modulus
 
 ## Notes on functionality 
 
+### Supports PEMDAS!
+
+Modulo operations are taken as the same precedence as multiplication and division
+
 ### 2nd
 
 Press 2nd to reveal more operations!
@@ -24,6 +28,10 @@ If the most recent entry is a number, +/- negates that number. If the most recen
 ### Ans
 
 Ans button inputs the most recent answer into the current expression. If the current expression ends with a negative sign, the value of Ans is negated.
+
+### Not done yet
+
+The parentheses button is not supported yet. (I will get there!)
 
 ## Available Scripts
 
