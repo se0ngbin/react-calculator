@@ -1,13 +1,17 @@
 .display {
-	height: 60px;
+	height: 140px;
 	width: 340px;
 	margin-bottom: 10px;
 	padding: 10px;
 	background-color: #547980;
 	border-radius: 15px;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
+	text-align: right;
 	color: white;
-	font-size: 40px
+	font-size: 40px;
+	overflow-wrap: break-word;
+}
+
+p {
+	vertical-align: "top";
+	float: top;
 }
