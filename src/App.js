@@ -19,7 +19,8 @@ class App extends React.Component {
 			result: "",
 			proceed: true,
 			isFloat: false,
-			prevAns: NaN
+			prevAns: NaN,
+			nParen: 0
 		}
 	}
 
@@ -63,20 +64,41 @@ class App extends React.Component {
 	calcNewResult = (result, i) => {
 		let lower = result.lastIndexOf(" ", i - 2) + 1;
 		let upper = result.indexOf(" ", result.indexOf(" ", i) + 1);
-		if (upper == -1 && lower == 0) { return "" + this.doOperation(result); }
-		if (upper == -1) { return result.slice(0, lower) + this.doOperation(result.slice(lower)); }
+		if (upper === -1 && lower === 0) { return "" + this.doOperation(result); }
+		if (upper === -1) { return result.slice(0, lower) + this.doOperation(result.slice(lower)); }
 		return result.slice(0, lower) + this.doOperation(result.slice(lower, upper)) + result.slice(upper);
 	}
 
-	calculate = (result) => {
-		if (result.indexOf(" ") === -1) {
+	parenCalc = (result) => {
+		let initIndex = result.indexOf("(");
+		if (initIndex === -1) {
+			let newResult = this.calculate(result)
 			this.setState({
-				result: result,
-				prevAns: result,
+				result: newResult,
+				prevAns: newResult,
 				proceed: false
 			});
 			return;
 		}
+
+		let endIndex = result.indexOf(")", initIndex)
+		let nextParenIndex = result.indexOf("(", initIndex)
+
+		while (nextParenIndex > endIndex) {
+			initIndex = nextParenIndex
+			endIndex = result.indexOf(")", initIndex)
+			nextParenIndex = result.indexOf("(", initIndex)
+		}
+
+		this.parenCalc(result.slice(0, initIndex) + this.calculate(result.slice(initIndex + 1, endIndex)) + result.slice(endIndex + 1));
+	}
+
+	calculate = (result) => {
+		if (result.indexOf(" ") === -1) {
+			return result;
+		}
+
+
 
 		if (result.indexOf("^") !== -1) {
 			let i = result.indexOf("^");
@@ -105,25 +127,28 @@ class App extends React.Component {
 			this.setState({
 				result: "",
 				proceed: true,
-				isFloat: false
+				isFloat: false,
+				nParen: 0,
 			})
 		}
 
 		else if (key === "C" && this.state.result !== "") {
-			if (!this.state.proceed) { this.setState({ proceed: true, result: "", isFloat: false }) }
+			let lastDig = this.state.result.slice(-1);
+			if (!this.state.proceed || lastDig === "n") { this.setState({ proceed: true, result: "", isFloat: false, nParen: 0 }) }
 			else {
-				let lastDig = this.state.result.slice(-1);
 				if (lastDig === " ") { this.setState({ result: this.state.result.slice(0, -3) }) }
 				else if (lastDig === ".") { this.setState({ result: this.state.result.slice(0, -1), isFloat: false }) }
+				else if (lastDig === "(") { this.setState({ result: this.state.result.slice(0, -1), nParen: this.state.nParen - 1 }) }
+				else if (lastDig === ")") { this.setState({ result: this.state.result.slice(0, -1), nParen: this.state.nParen + 1 }) }
 				else { this.setState({ result: this.state.result.slice(0, -1) }) }
 			}
 		}
 
-		else if (key === "=" && this.state.proceed && this.state.result !== "") {
+		else if (key === "=" && this.state.proceed && this.state.result !== "" && this.state.nParen === 0) {
 			let lastDig = this.state.result.slice(-1);
 			console.log(lastDig);
 			if (lastDig !== " ") {
-				this.calculate(this.state.result)
+				this.parenCalc(this.state.result)
 			}
 		}
 
@@ -159,6 +184,9 @@ class App extends React.Component {
 		// key is number
 		else if (!isNaN(key)) {
 			if (this.state.proceed) {
+				// TODO: support operations like y(n) = y*n
+				// must specify operation after ()
+				if (this.state.result.slice(-1) === ")") { return; }
 				this.setState({
 					result: this.state.result + key
 				})
@@ -189,6 +217,10 @@ class App extends React.Component {
 		}
 
 		else if (key === "+/-") {
+			// TODO: support negation inside parentheses expression
+			if (this.state.result.slice(-1) === ")") { return; }
+			if (this.state.result.slice(-1) === "(") { this.setState({ result: this.state.result + "-" }); return; }
+
 			let lastNumIndex = this.state.result.lastIndexOf(" ")
 
 			// if just one number or empty: lastnumindex = -1
@@ -207,7 +239,7 @@ class App extends React.Component {
 			}
 
 
-			// if last was operator or number
+			// if last was operator or number or paren
 			let lastNum = this.state.result.slice(lastNumIndex + 1);
 
 			if (lastNum.charAt(0) === '-') {
@@ -225,6 +257,9 @@ class App extends React.Component {
 
 		// is operator
 		else if (this.state.result !== "" && operators.includes(key)) {
+			// can't insert an operator after another
+			if (this.state.result.slice(-1) === " " || this.state.result.slice(-1) === "-") { return; }
+
 			this.setState({
 				result: this.state.result + " " + key + " ",
 				isFloat: false,
@@ -232,13 +267,31 @@ class App extends React.Component {
 			})
 		}
 
+		// is (. Only allowed after an operator OR minus sign OR as first entry
+		else if (key === "(") {
+			let lastDig = this.state.result.slice(-1);
+
+			if (!this.state.proceed || this.state.result === "") { this.setState({ proceed: true, result: "(", nParen: this.state.nParen + 1 }) }
+			else if (lastDig === " " || lastDig === "-") { this.setState({ result: this.state.result + "(", nParen: this.state.nParen + 1 }) }
+		}
+
+		// is ). Only allowed after a number AND if there is a (.
+		else if (key === ")") {
+			if (this.state.nParen < 1) { return; }
+
+			let lastDig = this.state.result.slice(-1);
+			if (!isNaN(lastDig)) { this.setState({ result: this.state.result + ")", nParen: this.state.nParen - 1 }) }
+		}
+
 		// is logarithm --> takes logarithm of latest number
 		else if (miscKeys.includes(key) && this.state.result !== "") {
 			let lastDig = this.state.result.slice(-1);
 			// if last was operator or ()
-			if (lastDig === "(" || lastDig === "(" || operators.includes(lastDig)) { return; }
+			if (lastDig === "(" || lastDig === "(" || lastDig === " ") { return; }
 
 			let lastNumIndex = this.state.result.lastIndexOf(" ");
+			let lastParen = this.state.result.lastIndexOf("(")
+			lastNumIndex = lastNumIndex < lastParen ? lastParen : lastNumIndex;
 			let num;
 
 			// if just one number: lastnumindex = -1
