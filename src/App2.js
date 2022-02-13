@@ -298,7 +298,7 @@ class App extends React.Component {
         else if (miscKeys.includes(key) && this.state.result !== "") {
             let lastDig = this.state.result.slice(-1);
             // if last was operator or ()
-            if (lastDig === "(" || lastDig === "(" || lastDig === " ") { return; }
+            if (lastDig === "(" || lastDig === ")" || lastDig === " ") { return; }
 
             let lastNumIndex = this.state.result.lastIndexOf(" ");
             let lastParen = this.state.result.lastIndexOf("(")
