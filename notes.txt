@@ -1,0 +1,10 @@
+Frontend:I split the calculator into 3 parts: the frame, the buttons, and the display panel. I based the design off of my iphone calculator, but then thought it would be a better idea to keep my inputs on the screen so that it is less confusing for the users.
+
+
+Algorithm:I originally had my program calculate using recursion (in App.js), but then remembered an implementation using postfix notation I learned about in one of my CS classes, so I made a new file (App2.js) using that algorithm. Both algorithms work (I tested them).
+
+
+The main challenge for me was the negation operator. I originally made it act like my iphone's negation operator, but then I switched to having the whole expression stay on the screen, which made everything very complicated. Currently, my negation operator negates the most recent number if the last input was a number and adds a - sign if the last input was not a number. If the last input was ), it doesn't do anything because I wasn't sure which implementation would make the most sense from the user's perspective.
+
+
+Another challenge was figuring out which buttons can be pressed after others. For example, it doesn't make sense if I press log after + or + after *, so I had to make sure my calculator wouldn't input that on display. It might have been smarter to just let users do whatever and produce an error in the calculation stage, but since my original design was like an iPhone calculator (where invalid input checking is required), I didn't want to take out what I already implemented. I added more state variables (isFloat, numParens) to help with this.
