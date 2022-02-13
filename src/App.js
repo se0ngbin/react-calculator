@@ -24,6 +24,7 @@ class App extends React.Component {
 		}
 	}
 
+	// does 2 operand operation
 	doOperation = (expression) => {
 		var elements = expression.split(" ");
 		var calculatedNumber = parseFloat(elements[0]);
@@ -61,6 +62,7 @@ class App extends React.Component {
 		return calculatedNumber;
 	}
 
+	// called to update new expression every time one operation is carried out
 	calcNewResult = (result, i) => {
 		let lower = result.lastIndexOf(" ", i - 2) + 1;
 		let upper = result.indexOf(" ", result.indexOf(" ", i) + 1);
@@ -69,6 +71,7 @@ class App extends React.Component {
 		return result.slice(0, lower) + this.doOperation(result.slice(lower, upper)) + result.slice(upper);
 	}
 
+	// parent calulate function; recursion
 	parenCalc = (result) => {
 		let initIndex = result.indexOf("(");
 		if (initIndex === -1) {
@@ -92,6 +95,7 @@ class App extends React.Component {
 		this.parenCalc(result.slice(0, initIndex) + this.calculate(result.slice(initIndex + 1, endIndex)) + result.slice(endIndex + 1));
 	}
 
+	// called to calculate expression inside (); done through recursion
 	calculate = (result) => {
 		if (result.indexOf(" ") === -1) {
 			return result;

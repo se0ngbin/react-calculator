@@ -30,6 +30,10 @@ If the most recent entry is a number, +/- negates that number. If the most recen
 
 Ans button inputs the most recent answer into the current expression. If the current expression ends with a negative sign, the value of Ans is negated.
 
+### Parentheses
+
+Parentheses () work as expected. However, you must specify an operation to do with an expresion insdie (). For example, typing in operations like x(y) are not supported. (The calculator won't even let you input that). Instead, input x*(y).
+
 ## Available Scripts
 
 In the project directory, run:
