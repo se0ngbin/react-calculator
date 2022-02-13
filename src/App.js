@@ -54,7 +54,7 @@ class App extends React.Component {
 		});
 
 		//precision issues
-		if (!isNaN(calculatedNumber)) { calculatedNumber = parseFloat(calculatedNumber.toFixed(12)); }
+		if (!isNaN(calculatedNumber)) { calculatedNumber = parseFloat(calculatedNumber.toFixed(15)); }
 
 		console.log("result: %d", calculatedNumber);
 
@@ -82,12 +82,11 @@ class App extends React.Component {
 		}
 
 		let endIndex = result.indexOf(")", initIndex)
-		let nextParenIndex = result.indexOf("(", initIndex)
+		let nextParenIndex = result.indexOf("(", initIndex + 1)
 
-		while (nextParenIndex > endIndex) {
+		while (nextParenIndex !== -1 && nextParenIndex < endIndex) {
 			initIndex = nextParenIndex
-			endIndex = result.indexOf(")", initIndex)
-			nextParenIndex = result.indexOf("(", initIndex)
+			nextParenIndex = result.indexOf("(", initIndex + 1)
 		}
 
 		this.parenCalc(result.slice(0, initIndex) + this.calculate(result.slice(initIndex + 1, endIndex)) + result.slice(endIndex + 1));
@@ -257,8 +256,9 @@ class App extends React.Component {
 
 		// is operator
 		else if (this.state.result !== "" && operators.includes(key)) {
-			// can't insert an operator after another
-			if (this.state.result.slice(-1) === " " || this.state.result.slice(-1) === "-") { return; }
+			// can't insert an operator after another OR after open parenthesis
+			let lastDig = this.state.result.slice(-1);
+			if (lastDig === " " || lastDig === "-" || lastDig === "(") { return; }
 
 			this.setState({
 				result: this.state.result + " " + key + " ",
@@ -267,20 +267,20 @@ class App extends React.Component {
 			})
 		}
 
-		// is (. Only allowed after an operator OR minus sign OR as first entry
+		// is (. Only allowed after an operator OR minus sign OR as first entry OR after another (
 		else if (key === "(") {
 			let lastDig = this.state.result.slice(-1);
 
 			if (!this.state.proceed || this.state.result === "") { this.setState({ proceed: true, result: "(", nParen: this.state.nParen + 1 }) }
-			else if (lastDig === " " || lastDig === "-") { this.setState({ result: this.state.result + "(", nParen: this.state.nParen + 1 }) }
+			else if (lastDig === " " || lastDig === "-" || lastDig === "(") { this.setState({ result: this.state.result + "(", nParen: this.state.nParen + 1 }) }
 		}
 
-		// is ). Only allowed after a number AND if there is a (.
+		// is ). Only allowed after a number or ) AND if there is a (.
 		else if (key === ")") {
 			if (this.state.nParen < 1) { return; }
 
 			let lastDig = this.state.result.slice(-1);
-			if (!isNaN(lastDig)) { this.setState({ result: this.state.result + ")", nParen: this.state.nParen - 1 }) }
+			if (!isNaN(lastDig) || lastDig === ")") { this.setState({ result: this.state.result + ")", nParen: this.state.nParen - 1 }) }
 		}
 
 		// is logarithm --> takes logarithm of latest number
