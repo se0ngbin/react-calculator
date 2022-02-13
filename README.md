@@ -1,6 +1,6 @@
 # React Calculator
 
-This is a calculator I built using react. Currently supports the operations +, -, *, /, modulus, negating, ln and log.
+This is a calculator I built using react. Currently supports the operations +, -, *, /, modulus, negating, ln and log. App.js implements the calculations using recursion; App2.js does an infix to postfix conversion, then a calculation on postfix using a stack.
 
 <img src="calc.png" alt="picture of my calculator" width="250"/>
 
@@ -8,7 +8,7 @@ This is a calculator I built using react. Currently supports the operations +, -
 
 ### Supports PEMDAS!
 
-Modulo operations are taken as the same precedence as multiplication and division
+Modulo operations are taken as the same precedence as multiplication and division. The negation operator has precedence over all operators including ^.
 
 ### 2nd
 
