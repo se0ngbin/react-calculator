@@ -1,7 +1,7 @@
 import './App.css';
-import Frame from "./pages/Frame"
-import Key from "./pages/Key"
-import Display from "./pages/Display"
+import Frame from "./classes/Frame"
+import Key from "./classes/Key"
+import Display from "./classes/Display"
 import React from 'react';
 
 

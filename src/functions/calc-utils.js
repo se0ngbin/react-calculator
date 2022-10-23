@@ -1,5 +1,6 @@
-import { operators } from "./constants";
+import { operators } from "../constants";
 
+// rank of operators; negation is higher than exponentiation
 const rank = (op) => {
     if (op === "+" || op === "-") { return 1; }
     else if (op === "*" || op === "/" || op === "mod") { return 2; }
@@ -7,6 +8,7 @@ const rank = (op) => {
     else if (op === "neg") { return 4; }
 }
 
+// convert infix to postfix
 const infixToPostfix = (elements) => {
     let postfixStack = [];
     let tempStack = [];
@@ -38,6 +40,7 @@ const infixToPostfix = (elements) => {
     })
 
     while (tempStack.length > 0) { postfixStack.push(tempStack.pop()); }
+    console.log(postfixStack);
     return postfixStack;
 }
 
