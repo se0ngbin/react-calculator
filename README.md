@@ -1,6 +1,6 @@
 # React Calculator
 
-This is a calculator I built using react. Currently supports the operations +, -, *, /, modulus, negating, ln and log. App.js implements the calculations using recursion; App2.js does an infix to postfix conversion, then a calculation on postfix using a stack.
+This is a calculator I built using react. Currently supports the operations +, -, *, /, modulus, and negating. App.js does an infix to postfix conversion, then a calculation on postfix using a stack. (App2.js implements the calculations using recursion).
 
 <img src="calc.png" alt="picture of my calculator" width="250"/>
 
@@ -13,10 +13,6 @@ Modulo operations are taken as the same precedence as multiplication and divisio
 ### 2nd
 
 Press 2nd to reveal more operations!
-
-### ln and log
-
-My calculator takes the logarithm of the most recent number. It does not do anything if an operator or parentheses was the most recent entry. 
 
 ### AC and C
 
