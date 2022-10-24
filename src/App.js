@@ -73,8 +73,8 @@ class App extends React.Component {
     }
 
     handleAns = () => {
-        if (!(isNaN(this.state.prevAns) && this.state.proceed && (this.state.result.slice(-1) === " " || 
-            this.state.result.slice(-1) === '-' || this.state.result === ""))) { return; }
+        if (isNaN(this.state.prevAns) || !this.state.proceed || !(this.state.result.slice(-1) === " " || 
+            this.state.result.slice(-1) === '-' || this.state.result === "")) { return; }
         let lastDig = this.state.result.slice(-1);
         let result;
 
